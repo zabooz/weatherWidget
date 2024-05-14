@@ -29,6 +29,9 @@ const config = {
   ],
 };
 
+
+
+
 const weatherWidget = {
   execute: (config) => {
     const loadWidget = () => {
@@ -68,9 +71,9 @@ const weatherWidget = {
     main.id = "weatherWidgetMain";
     main.classList.add("uk-flex");
 
-
     const iconDiv = document.createElement("div");
     iconDiv.id = "iconDiv";
+    iconDiv.classList.add("uk-flex", "uk-flex-column", "uk-width-2-3");
 
     const dataDiv = document.createElement("div");
     dataDiv.id = "dataDiv";
@@ -78,7 +81,6 @@ const weatherWidget = {
 
     main.append(iconDiv, dataDiv);
 
-    iconDiv.classList.add("uk-flex", "uk-flex-column", "uk-width-2-3");
     target.append(main);
   },
   createWeatherDescription: (data) => {
@@ -121,13 +123,12 @@ const weatherWidget = {
     regionPara.classList.add("uk-text-left");
     const regionIcon = document.createElement("span");
     regionIcon.setAttribute("uk-icon", "location");
-    regionIcon.setAttribute("ratio", "0.8")
+    regionIcon.setAttribute("ratio", "0.8");
     regionPara.append(regionIcon);
     const regionID = data.sys.country;
     let regionNames = new Intl.DisplayNames(["en"], { type: "region" });
-   
-    regionPara.append(document.createTextNode(` ${regionNames.of(regionID)}`))
-    
+
+    regionPara.append(document.createTextNode(` ${regionNames.of(regionID)}`));
 
     //wochentag
     const today = new Date();
@@ -145,7 +146,7 @@ const weatherWidget = {
     day.classList.add("uk-text-left");
     const dayIcon = document.createElement("span");
     dayIcon.setAttribute("uk-icon", "calendar");
-    dayIcon.setAttribute("ratio", "0.8")
+    dayIcon.setAttribute("ratio", "0.8");
     day.append(dayIcon);
     day.append(document.createTextNode("" + dayNames[today.getDay()]));
 
@@ -168,8 +169,9 @@ const weatherWidget = {
     const tempIcon = document.createElement("i");
     tempIcon.classList.add("wi", "wi-thermometer");
     tempPara.append(tempIcon);
-    tempPara.appendChild(document.createTextNode(" Temperature: " + tempCelsius.toFixed(1) + "°C"));
-    
+    tempPara.appendChild(
+      document.createTextNode(" Temperature: " + tempCelsius.toFixed(1) + "°C")
+    );
 
     //Luftfeuchtigkeit
     const humidity = data.main.humidity;
@@ -177,8 +179,9 @@ const weatherWidget = {
     const humidityIcon = document.createElement("i");
     humidityIcon.classList.add("wi", "wi-humidity");
     humidityPara.append(humidityIcon);
-    humidityPara.appendChild(document.createTextNode(" Humidity: " + humidity + "%"));
-   
+    humidityPara.appendChild(
+      document.createTextNode(" Humidity: " + humidity + "%")
+    );
 
     //Windgeschwindigkeit
     const windSpeed = data.wind.speed;
@@ -187,7 +190,9 @@ const weatherWidget = {
     windIcon.classList.add("wi", "wi-wind");
 
     windSpeedPara.append(windIcon);
-    windSpeedPara.appendChild(document.createTextNode("  Wind: " + windSpeed + " m/s"))
+    windSpeedPara.appendChild(
+      document.createTextNode("  Wind: " + windSpeed + " m/s")
+    );
 
     weatherData.append(tempPara, humidityPara, windSpeedPara);
 
@@ -195,7 +200,6 @@ const weatherWidget = {
   },
 
   createLocationButton: () => {
-
     const target = document.getElementById(config.targetId);
 
     const locationButton = document.createElement("button");
@@ -206,7 +210,7 @@ const weatherWidget = {
         (location) => location.lat !== config.lat && location.lng !== config.lng
       );
       const randomLocation =
-      cleanLocationArr[Math.floor(Math.random() * cleanLocationArr.length)];
+        cleanLocationArr[Math.floor(Math.random() * cleanLocationArr.length)];
       config.lat = randomLocation.lat;
       config.lng = randomLocation.lng;
       weatherWidget.execute(config);
