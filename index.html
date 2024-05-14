@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Weather Widget</title>
     <!-- UIkit CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.20.10/dist/css/uikit.min.css" />
 
@@ -12,9 +12,15 @@
 <script src="https://cdn.jsdelivr.net/npm/uikit@3.20.10/dist/js/uikit-icons.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="weatherWidget.js"></script>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="./css/style.css">
+<!-- <link rel="stylesheet" href="./css/weather-icons-wind.css">
+<link rel="stylesheet" href="./css/weather-icons-wind.min.css"> -->
+<link rel="stylesheet" href='./css/weather-icons.css'>
+<link rel="stylesheet" href="./css/weather-icons.min.css">
 </head>
 <body>
     
+    <div id="weatherWidgetDiv"></div>
+    <script>weatherWidget.execute(config)</script>
 </body>
 </html>
