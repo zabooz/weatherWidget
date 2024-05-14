@@ -66,9 +66,8 @@ const weatherWidget = {
 
     const main = document.createElement("div");
     main.id = "weatherWidgetMain";
-    main.style.backgroundColor = "lightblue";
     main.classList.add("uk-flex");
-    main.style.width = "600px";
+
 
     const iconDiv = document.createElement("div");
     iconDiv.id = "iconDiv";
@@ -110,7 +109,7 @@ const weatherWidget = {
     locationDate.classList.add(
       "uk-grid",
       "uk-flex-column",
-      "uk-margin-medium-top"
+      "uk-margin-small-top"
     );
 
     //StadtName und Region
@@ -118,12 +117,17 @@ const weatherWidget = {
     cityName.classList.add("uk-text-left");
     cityName.innerText = data.name;
 
-    const region = document.createElement("p");
-    region.classList.add("uk-text-left");
-
+    const regionPara = document.createElement("p");
+    regionPara.classList.add("uk-text-left");
+    const regionIcon = document.createElement("span");
+    regionIcon.setAttribute("uk-icon", "location");
+    regionIcon.setAttribute("ratio", "0.8")
+    regionPara.append(regionIcon);
     const regionID = data.sys.country;
     let regionNames = new Intl.DisplayNames(["en"], { type: "region" });
-    region.innerText = regionNames.of(regionID);
+   
+    regionPara.append(document.createTextNode(` ${regionNames.of(regionID)}`))
+    
 
     //wochentag
     const today = new Date();
@@ -139,9 +143,13 @@ const weatherWidget = {
 
     const day = document.createElement("p");
     day.classList.add("uk-text-left");
-    day.innerText = dayNames[today.getDay()];
+    const dayIcon = document.createElement("span");
+    dayIcon.setAttribute("uk-icon", "calendar");
+    dayIcon.setAttribute("ratio", "0.8")
+    day.append(dayIcon);
+    day.append(document.createTextNode("" + dayNames[today.getDay()]));
 
-    locationDate.append(cityName, region, day);
+    locationDate.append(cityName, regionPara, day);
 
     return locationDate;
   },
@@ -156,23 +164,32 @@ const weatherWidget = {
 
     //Temperatur
     const tempCelsius = data.main.temp - 273.15;
-    const temp = document.createElement("p");
-    temp.classList.add("uk-text-left");
-    temp.innerText = tempCelsius.toFixed(1) + "°C";
+    const tempPara = document.createElement("p");
+    const tempIcon = document.createElement("i");
+    tempIcon.classList.add("wi", "wi-thermometer");
+    tempPara.append(tempIcon);
+    tempPara.appendChild(document.createTextNode(" Temperature: " + tempCelsius.toFixed(1) + "°C"));
+    
 
     //Luftfeuchtigkeit
     const humidity = data.main.humidity;
     const humidityPara = document.createElement("p");
-    humidityPara.classList.add("uk-text-left");
-    humidityPara.innerText = "Humidity: " + humidity + "%";
+    const humidityIcon = document.createElement("i");
+    humidityIcon.classList.add("wi", "wi-humidity");
+    humidityPara.append(humidityIcon);
+    humidityPara.appendChild(document.createTextNode(" Humidity: " + humidity + "%"));
+   
 
     //Windgeschwindigkeit
     const windSpeed = data.wind.speed;
     const windSpeedPara = document.createElement("p");
-    windSpeedPara.classList.add("uk-text-left");
-    windSpeedPara.innerText = "Wind: " + windSpeed + " m/s";
+    const windIcon = document.createElement("i");
+    windIcon.classList.add("wi", "wi-wind");
 
-    weatherData.append(temp, humidityPara, windSpeedPara);
+    windSpeedPara.append(windIcon);
+    windSpeedPara.appendChild(document.createTextNode("  Wind: " + windSpeed + " m/s"))
+
+    weatherData.append(tempPara, humidityPara, windSpeedPara);
 
     return weatherData;
   },
