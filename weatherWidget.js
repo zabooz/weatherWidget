@@ -3,6 +3,7 @@ const config = {
   lat: 46.6357,
   lng: 14.311817,
   apiKey: "96fe2517f425092a3ad95905aa85bd71",
+  URL: "https://api.openweathermap.org/data/2.5/weather",
 };
 
 const weatherWidget = {
@@ -16,7 +17,7 @@ const weatherWidget = {
 
   getWeatherData: async function (config) {
     try {
-      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${config.lat}&lon=${config.lng}&appid=${config.apiKey}`;
+      const apiUrl = `${config.URL}?lat=${config.lat}&lon=${config.lng}&appid=${config.apiKey}`;
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
@@ -48,25 +49,18 @@ const weatherWidget = {
 
     dataDiv.classList.add("uk-grid", "uk-grid-medium");
 
-    // dataDiv.classList.add(
-    //   "uk-flex",
-    //   "uk-flex-column",
-    //   "flex-align-left",
-    //   "uk-margin-remove",
-    //   "uk-width-1-1"
-    // );
     main.append(iconDiv, dataDiv);
     target.append(main);
   },
   createWeatherDescription: (data) => {
+
     const iconDiv = document.getElementById("iconDiv");
-
-    const iconId = data.weather[0].icon;
-
-    iconDiv.classList.add("uk-flex", "uk-flex-column", "uk-width-1-1");
+    iconDiv.classList.add("uk-flex", "uk-flex-column",'uk-width-2-3');
 
     const icon = document.createElement("img");
+  
     icon.style.width = "200px";
+    const iconId = data.weather[0].icon;
     icon.src = `https://openweathermap.org/img/w/${iconId}.png`;
 
     const para = document.createElement("p");
@@ -77,55 +71,69 @@ const weatherWidget = {
   createData: (data) => {
     const dataDiv = document.getElementById("dataDiv");
 
+    const locationDate = weatherWidget.locationAndDate(data);
+    const weatherData = weatherWidget.weatherData(data);
+
+    dataDiv.append(locationDate, weatherData);
+  },
+  locationAndDate: (data) => {
     const locationDate = document.createElement("div");
     locationDate.id = "locationDate";
-    locationDate.classList.add("uk-flex", "uk-flex-column");
-    locationDate.classList.add("uk-grid", "uk-margin-small-top");
+    locationDate.classList.add("uk-grid", "uk-flex-column", "uk-margin-medium-top");
 
+    //StadtName und Region
     const cityName = document.createElement("p");
     cityName.classList.add("uk-text-left");
     cityName.innerText = data.name;
 
-    const regionID = data.sys.country;
-    let regionNames = new Intl.DisplayNames(["en"], { type: "region" });
-
     const region = document.createElement("p");
     region.classList.add("uk-text-left");
+
+    const regionID = data.sys.country;
+    let regionNames = new Intl.DisplayNames(["en"], { type: "region" });
     region.innerText = regionNames.of(regionID);
 
+    //wochentag
+    const today = new Date();
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    
     const day = document.createElement("p");
     day.classList.add("uk-text-left");
-    day.innerText = "Monday";
+    day.innerText = dayNames[today.getDay()];
 
     locationDate.append(cityName, region, day);
 
-
+    return locationDate;
+  },
+  weatherData: (data) => {
     const weatherData = document.createElement("div");
     weatherData.id = "weatherData";
-    weatherData.classList.add("uk-grid", "uk-flex-column", "uk-margin-small-top");
+    weatherData.classList.add(
+      "uk-grid",
+      "uk-flex-column",
+      "uk-margin-small-top"
+    );
 
-
+    //Temperatur
     const tempCelsius = data.main.temp - 273.15;
     const temp = document.createElement("p");
     temp.classList.add("uk-text-left");
     temp.innerText = tempCelsius.toFixed(1) + "°C";
 
-
-
+    //Luftfeuchtigkeit
     const humidity = data.main.humidity;
     const humidityPara = document.createElement("p");
     humidityPara.classList.add("uk-text-left");
     humidityPara.innerText = "Humidity: " + humidity + "%";
 
+    //Windgeschwindigkeit
     const windSpeed = data.wind.speed;
     const windSpeedPara = document.createElement("p");
     windSpeedPara.classList.add("uk-text-left");
     windSpeedPara.innerText = "Wind: " + windSpeed + " m/s";
 
-    weatherData.append(temp,humidityPara,windSpeedPara);
+    weatherData.append(temp, humidityPara, windSpeedPara);
 
-
-
-    dataDiv.append(locationDate, weatherData);
+    return weatherData;
   },
 };
