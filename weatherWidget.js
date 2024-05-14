@@ -4,15 +4,25 @@ const config = {
   lng: 14.311817,
   apiKey: "96fe2517f425092a3ad95905aa85bd71",
   URL: "https://api.openweathermap.org/data/2.5/weather",
+  refreshTime: 300000,
 };
 
 const weatherWidget = {
   execute: (config) => {
-    weatherWidget.createLayout();
-    weatherWidget.getWeatherData(config).then((data) => {
-      weatherWidget.createWeatherDescription(data);
-      weatherWidget.createData(data);
-    });
+
+    const loadWidget = () => {
+        weatherWidget.createLayout();
+        weatherWidget.getWeatherData(config).then((data) => {
+          weatherWidget.createWeatherDescription(data);
+          weatherWidget.createData(data);
+          console.log(data)
+        });
+    }
+
+    loadWidget();
+
+    setInterval(loadWidget, config.refreshTime)
+
   },
 
   getWeatherData: async function (config) {
@@ -26,18 +36,17 @@ const weatherWidget = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("error", error);
       throw error;
     }
   },
   createLayout: () => {
     const target = document.getElementById(config.targetId);
 
+    target.innerHTML = "";
+
     const main = document.createElement("div");
     main.id = "weatherWidgetMain";
-
     main.style.backgroundColor = "lightblue";
-
     main.classList.add("uk-flex");
     main.style.width = "500px";
 
@@ -46,10 +55,10 @@ const weatherWidget = {
 
     const dataDiv = document.createElement("div");
     dataDiv.id = "dataDiv";
-
     dataDiv.classList.add("uk-grid", "uk-grid-medium");
 
     main.append(iconDiv, dataDiv);
+
     target.append(main);
   },
   createWeatherDescription: (data) => {
@@ -96,7 +105,7 @@ const weatherWidget = {
     //wochentag
     const today = new Date();
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    
+
     const day = document.createElement("p");
     day.classList.add("uk-text-left");
     day.innerText = dayNames[today.getDay()];
